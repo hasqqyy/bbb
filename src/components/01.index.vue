@@ -13,12 +13,12 @@
                     <div class="left-220" style="margin: 0px;">
                         <div class="banner-nav">
                             <ul>
-                                <li v-for="(items, index) in catelist" :key="items.id">
+                                <li v-for="items in catelist" :key="items.id">
                                     <h3>
                                         <i class="iconfont icon-arrow-right"></i>
                                         <span>{{items.title}}</span>
                                         <p>
-                                            <span v-for="(itemson, index) in items.subcates" :key="itemson.id">
+                                            <span v-for="itemson in items.subcates" :key="itemson.id">
                                                 {{itemson.title}}&nbsp;
                                             </span>
                                         </p>
@@ -29,7 +29,7 @@
                                                 <a href="/goods/40.html">{{items.title}}</a>
                                             </dt>
                                             <dd>
-                                                <a href="/goods/43.html" v-for="(itemson, index) in items.subcates" :key="itemson.id">{{itemson.title}}</a>
+                                                <a href="/goods/43.html" v-for="itemson in items.subcates" :key="itemson.id">{{itemson.title}}</a>
                                             </dd>
                                         </dl>
                                     </div>
@@ -42,7 +42,9 @@
                         
                                <el-carousel height="341px">
                                     <el-carousel-item v-for="items in sliderlist" :key="items.id">
-                                        <img :src="items.img_url" :alt="items.title">
+                                        <!-- <img :src="items.img_url" :alt="items.title"> -->
+                                        <!-- 懒加载 -->
+                                        <img v-lazy="items.img_url" :alt="items.title">
                                     </el-carousel-item>
                                 </el-carousel>
                             
@@ -50,10 +52,12 @@
                     <!--/幻灯片-->
                     <div class="left-220">
                         <ul class="side-img-list">
-                            <li v-for="(items, index) in toplist" :key="items.id">
+                            <li v-for="(items,index) in toplist" :key="items.id">
                                 <div class="img-box">
                                     <label>{{index+1}}</label>
-                                    <img :src="items.img_url">
+                                    <!-- <img :src="items.img_url"> -->
+                                    <!-- 懒加载 -->
+                                    <img v-lazy="items.img_url">
                                 </div>
                                 <div class="txt-box">
                                     <a href="/goods/show-98.html">{{items.title}}</a>
@@ -65,11 +69,11 @@
                 </div>
             </div>
         </div>
-        <div class="section" v-for="(pro, index) in message" :key="pro.level1cateid">
+        <div class="section" v-for="pro in message" :key="pro.level1cateid">
             <div class="main-tit">
                 <h2>{{pro.catetitle}}</h2>
                 <p>
-                    <a href="/goods/43.html" v-for="(product, index) in pro.level2catelist" :key="product.subcateid">{{product.subcatetitle}}</a>
+                    <a href="/goods/43.html" v-for="product in pro.level2catelist" :key="product.subcateid">{{product.subcatetitle}}</a>
                     <a href="/goods/40.html">更多
                         <i>+</i>
                     </a>
@@ -78,10 +82,13 @@
             <div class="wrapper clearfix">
                 <div class="wrap-box">
                     <ul class="img-list">
-                        <li v-for="(proson, index) in pro.datas" :key="proson.artID">
-                            <a href="#/site/goodsinfo/87" class="">
-                                <div class="img-box">
-                                    <img :src="proson.img_url">
+                        <li v-for="proson in pro.datas" :key="proson.artID">
+                            <!-- <a href="#/site/goodsinfo/87" class=""> -->
+                            <router-link :to="'/detail/'+proson.artID">
+                            <div class="img-box">
+                                    <!-- <img :src="proson.img_url"> -->
+                                    <!-- 懒加载 -->
+                                    <img v-lazy="proson.img_url">
                                 </div>
                                 <div class="info">
                                     <h3>{{proson.artTitle}}</h3>
@@ -94,7 +101,8 @@
                                         </span>
                                     </p>
                                 </div>
-                            </a>
+                            </router-link>  
+                            <!-- </a> -->
                         </li>
                     </ul>
                 </div>
