@@ -112,8 +112,6 @@
 </template>
 
 <script>
-//导入axios 请求数据
-import axios from 'axios';
 //导入momonet 设置日期格式
 import moment from 'moment';
 export default {
@@ -136,7 +134,7 @@ export default {
   created() {
     // console.log(this.info);
     //1.获取商品列表数据
-    axios.get(`http://47.106.148.205:8899/site/goods/gettopdata/goods`)
+    this.$axios.get(`site/goods/gettopdata/goods`)
     .then((response)=>{
       // console.log(response);  
       this.catelist=response.data.message.catelist;
@@ -145,7 +143,7 @@ export default {
     });
 
     //2.获取商品分类列表数据
-    axios.get(`http://47.106.148.205:8899/site/goods/getgoodsgroup`)
+    this.$axios.get(`site/goods/getgoodsgroup`)
     .then((response)=>{
         // console.log(response);
         this.message=response.data.message;
