@@ -1,5 +1,9 @@
 <template>
-    <div>
+<!-- 加载中 插件 -->
+    <div v-loading="loading"
+    element-loading-text="拼命加载中"
+    element-loading-spinner="el-icon-loading"
+    element-loading-background="rgba(0, 0, 0, 0.8)">
         <div class="section">
             <div class="location">
                 <span>当前位置：</span>
@@ -108,14 +112,17 @@
                     <!--购物车底部-->
                     <div class="cart-foot clearfix">
                         <div class="right-box">
-                            <button class="button" onclick="javascript:location.href='/index.html';">继续购物</button>
-                            <button class="submit" onclick="formSubmit(this, '/', '/shopping.html');">立即结算</button>
+                            <router-link to="/index">
+                            <button class="button">继续购物</button>
+                            </router-link>
+                            <button class="submit" @click="checkAndSubmit">立即结算</button>
                         </div>
                     </div>
                     <!--购物车底部-->
                 </div>
             </div>
         </div>
+        
     </div>
 </template>
 <script>
@@ -123,7 +130,8 @@
         name: "shoppingCart",
         data: function () {
             return {
-                message: [] //购物车数据
+                message: [], //购物车数据
+                loading: false,
             };
         },
         //生命周期
@@ -201,6 +209,48 @@
                         this.message.splice(index, 1);
                     }
                 })
+            },
+            //生成订单
+            checkAndSubmit(){
+                //判断是否选择商品
+                if(this.totalCount==0){
+                    this.$message.error('抱歉,您还没有选择商品哦!');
+                    return;
+                }
+                //到了这里 说明选择了商品,直接去订单页
+                //获取商品id
+                let ids='';
+                // 遍历数据 得到商品id的数组
+                this.message.forEach(v=>{
+                    //判断已经选中的id
+                    if(v.selected==true){
+                        ids+=v.id;
+                        ids+=','
+                    }
+                })
+                //截取最后的逗号
+                ids=ids.slice(0,-1);
+                //跳转到订单页
+                this.$router.push(`/order/${ids}`);
+
+                // // 弹框提示 loading框
+                // this.loading=true;
+                // //判断是否登录
+                // this.$axios.get(`site/account/islogin`).then((response)=>{
+                //     // console.log(response);
+                //     setTimeout(() => {
+                //         //关闭遮罩层
+                //        this.loading=false;
+                //     if(response.data.code=='nologin'){
+                         
+                //         //跳转到登录页
+                //         this.$router.push('/login');
+                //     }else {
+                //         this.$router.push('/order');
+                //     } 
+                //     }, 1000);
+                    
+                // })
             }
         }
     };

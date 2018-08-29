@@ -11,16 +11,16 @@
                     <a target="_blank" href="#"></a>
                 </div>
                 <div id="menu" class="right-box">
-                    <span style="display: none;">
-                        <a href="" class="">登录</a>
+                    <span v-show="$store.state.isLogin==false">
+                        <router-link to="/login">登录</router-link>
                         <strong>|</strong>
                         <a href="" class="">注册</a>
                         <strong>|</strong>
                     </span>
-                    <span>
+                    <span v-show="$store.state.isLogin==true">
                         <a href="" class="">会员中心</a>
                         <strong>|</strong>
-                        <a>退出</a>
+                        <a @click="loginOut">退出</a>
                         <strong>|</strong>
                     </span>
                     <router-link to="/cart">
@@ -114,6 +114,20 @@
                     </div>
                 </div>
             </div>
+            <!-- 退出弹框  插件 -->
+            <Modal v-model="isShow" width="360">
+        <p slot="header" style="color:#f60;text-align:center">
+            <Icon type="ios-information-circle"></Icon>
+            <span>提示框</span>
+        </p>
+        <div style="text-align:center">
+            <p>确认要离开吗?</p>
+        </div>
+        <div slot="footer" style="text-align: center">
+            <Button type="error" size="large"  @click="del">确认</Button>
+            <Button type="success" size="large"  @click="isShow=false">取消</Button>
+        </div>
+    </Modal>
   </div>
 </template>
 
@@ -122,7 +136,36 @@
 import $ from 'jquery';
 export default {
   name: 'container',
-  
+  data: function(){
+      return {
+          isShow: false,//是否显示
+      }
+  },
+  //事件
+  methods: {
+      //点击退出 弹框
+     loginOut() {
+         //弹框显示
+         this.isShow=true;
+        
+     },
+     //弹出框 确认
+     del(){
+         //关闭模态框
+         this.isShow=false;
+          //请求数据
+         this.$axios.get(`site/account/logout`).then((response)=>{
+            //  console.log(response);
+             //当status , 用户已注销
+             if(response.data.status==0){
+                 //增加vuex的方法
+                 this.$store.commit('updateLogin',false);
+                 //退出后永远跳回首页或者登录页
+                 this.$router.push('/index');
+             }
+         })
+     }
+  }
 }
 $(document).ready(function() {
 	$("#menu2 li a").wrapInner( '<span class="out"></span>' );
